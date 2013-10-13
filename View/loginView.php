@@ -35,7 +35,7 @@ class loginView{
 	
 	public function setMessage($messageNr)
 	{
-		if(isset($_POST)){
+		if($_POST){
 			switch ($messageNr) {
 				case 1:
 					$this->messageString = '<p>Inloggningen lyckades</p>';				
