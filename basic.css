@@ -1,0 +1,8 @@
+body{
+	font-family: "Times new roman", serif;
+	font-size:1em;
+}
+
+.time:first-letter{
+	text-transform: capitalize;
+}
