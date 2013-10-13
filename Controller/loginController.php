@@ -45,6 +45,8 @@ class loginController{
 		$this->session = self::stayLoggedin();
 		$this->messageNr = self::logOut();
 		
+		$this->cookies = $this->loginView->cookiesSet();
+		
 		$this->messageNr = $this->loginModel->checkCookies($this->cookies);
 		
 		$this->messageNr = $this->loginModel->checkLogin($this->username, $this->password);
@@ -53,16 +55,17 @@ class loginController{
 		
 		$this->browser = $this->loginModel->checkBrowser();
 		
-		$this->cookies = $this->loginView->cookiesSet();
+		var_dump($this->messageNr);
 			
 		self::loginCookies();	
 		self::showPage();
 	}
 	
 	public function showPage()
-	{				
+	{	var_dump($this->message);			
 		if($this->messageNr == 5)
 		{
+			var_dump($this->message);
 			$this->HTMLPage->getLogOutPage($this->message);
 		}
 		
@@ -80,7 +83,7 @@ class loginController{
 		}						
 		else if($this->session == true)
 		{
-			$this->HTMLPage->getLoggedInPage('');
+			$this->HTMLPage->getLoggedInPage($this->message);
 		}		
 		else 
 		{	
@@ -91,6 +94,7 @@ class loginController{
 	public function logOut()
 	{
 		$checkToLogout = $this->loginView->checkLogout();
+			$this->loginModel->destroySession();
 		return ($this->loginModel->checkLogout($checkToLogout));
 	}
 	

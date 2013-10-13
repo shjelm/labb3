@@ -58,7 +58,7 @@ class loginView{
 					break;
 				
 				case 6:
-					$this->messageString = '<p>Du har loggats ut</p>';	
+					$this->messageString = '<p>Inloggning med cookies</p>';	
 					break;
 				
 				default:

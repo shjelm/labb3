@@ -35,7 +35,6 @@ class loginModel{
 	
 	public function checkLogout($logout)
 	{
-		var_dump($logout);
 		if($logout == true)
 		{
 			self::destroySession();			
@@ -79,7 +78,7 @@ class loginModel{
 	
 	public function checkCookies($cookie)
 	{
-		if($cookie){
+		if($cookie == true){
 			return 6;
 		}
 	}
