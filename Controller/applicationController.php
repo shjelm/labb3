@@ -1,4 +1,5 @@
 <?php
+
 namespace controller;
 
 require_once realpath(dirname(__DIR__))."/View/loginView.php";
@@ -17,7 +18,7 @@ class ApplicationController{
 		
 	}
 	public function runApplication()
-	{var_dump(dirname(__FILE__));
+	{
 		try{
 			
 			$this->LoginController->userWantsToLogin();

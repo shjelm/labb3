@@ -106,11 +106,10 @@ class loginModel{
 	{
 		if($_SESSION[self::$checkBrowser][self::$browser] = self::getUserAgent()){
 			return true;			
-		}
-		
+		}		
 	}
 	
-	public function checkCookies($cookie)
+	public function setMsgCookies($cookie)
 	{
 		if($cookie){
 			return 6;

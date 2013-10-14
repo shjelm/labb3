@@ -24,6 +24,18 @@ class loginView{
 	private static $autoLogin = "AutoLogin";
 	
 	/**
+	 * @var string
+	 */
+	private static $cryptedPassword = "";
+	
+	/**
+	 * @var int
+	 */
+	private static $endtme;
+	
+	
+	
+	/**
 	 * @return string
 	 */
 	public function getUsername(){
@@ -140,7 +152,41 @@ class loginView{
 		}
 	}
 	
+	public function validCookies($username, $cryptedPassword)
+	{
+		if(self::cookiesSet()){
+			$end = file_get_contents("endtime.txt");
+			if($_COOKIE[self::$username] == $username  && $cryptedPassword == $cryptedPassword 
+				&& $end > time())
+			{
+				return true;
+			}
+			else 
+			{
+				return false;
+			}
+		}
+	}
+	public function getCryptedPassword()
+	{
+		if(isset($this->cryptedPassword)){
+			$pass = file_get_contents("password.txt");
+			return $pass;		
+		}
+	}
+	
+	public function getUserCookie()
+	{
+		return $_COOKIE[self::$username];
+	}
+	
+	public function getPasswordCookie()
+	{
+		return $_COOKIE[self::$password];
+	}
+	
 	public function autoLogin($username, $password){
+		
 		$this->endtime = time() + 3600;
 		file_put_contents("endtime.txt", $this->endtime);
 		setcookie(self::$username, $username, $this->endtime);
@@ -148,5 +194,6 @@ class loginView{
 		setcookie(self::$password, $this->cryptedPassword, $this->endtime);	
 		
 		file_put_contents("password.txt", $this->cryptedPassword);
+
 	}
 }

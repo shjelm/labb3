@@ -62,6 +62,11 @@ class loginController{
 	 */
 	private $cookiesOk;
 	
+	/**
+	 * @var string
+	 */
+	private $cryptedPassword; 
+	
 	public function __construct()
 	{
 		$this->loginView = new \view\LoginView();
@@ -79,10 +84,14 @@ class loginController{
 		$this->cookies = $this->loginView->cookiesSet();
 		
 		self::logOut();
+		
 		if(self::logOut() == false){
-			$this->messageNr = $this->loginModel->checkCookies($this->cookies);
 			
 			$this->messageNr = $this->loginModel->checkMessageNr($this->username, $this->password);
+			
+			if(self::loginWithCookies()){
+				$this->messageNr = $this->loginModel->setMsgCookies($this->cookies);
+			}
 		}
 		
 		$this->message = $this->loginView->setMessage($this->messageNr);
@@ -100,9 +109,9 @@ class loginController{
 			$this->HTMLPage->getLogOutPage($this->message);
 		}
 		
-		if($this->loginView->cookiesSet() && $this->session != true)
+		if(self::loginWithCookies() && $this->session != true)
 		{	//@TODO: Fixa meddelande till inloggning med cookies
-			$this->HTMLPage->getLoggedInPage("cookie");
+			$this->HTMLPage->getLoggedInPage($this->message);
 		}		
 		else if($this->browser != true)
 		{
@@ -146,13 +155,21 @@ class loginController{
 	{
 		$autoLogin = $this->loginView->checkAutoLogin();
 		
-		if($autoLogin == true){
-		$this->loginView->autoLogin($this->username, $this->password);
+		if($autoLogin && self::logIn()){
+			$this->loginView->autoLogin($this->username, $this->password);
 		}
 	}
 	
 	public function logIn()
 	{
 		return $this->loginModel->checkLogin($this->username, $this->password);
+	}
+	
+	public function loginWithCookies()		
+	{
+		$this->cryptedPassword = $this->loginView->getCryptedPassword();
+		var_dump($this->loginView->validCookies($this->username, $this->cryptedPassword));
+		return $this->loginView->validCookies($this->username, $this->cryptedPassword);
+		
 	}
 }
