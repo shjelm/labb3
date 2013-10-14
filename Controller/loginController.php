@@ -75,6 +75,7 @@ class loginController{
 		$this->password =  $this->loginView->getPassword();
 		
 		$this->session = self::stayLoggedin();
+		var_dump($this->session);
 		
 		$this->cookies = $this->loginView->cookiesSet();
 		

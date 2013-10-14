@@ -3,15 +3,29 @@
 namespace view;
 
 class loginView{
-	
+	/**
+	 * @var string
+	 */
 	private static $username = "UserName";
 	
+	/**
+	 * @var string
+	 */
 	private static $password = "Password";
 	
+	/**
+	 * @var string
+	 */
 	private static $logOut = "logout";
 	
+	/**
+	 * @var string
+	 */
 	private static $autoLogin = "AutoLogin";
 	
+	/**
+	 * @return string
+	 */
 	public function getUsername(){
 		if($_POST){
 			if(isset($_POST)){
@@ -22,6 +36,9 @@ class loginView{
 		}
 	}
 	
+	/**
+	 * @return string
+	 */
 	public function getPassword()
 	{
 		if($_POST){
@@ -33,6 +50,9 @@ class loginView{
 		}
 	}
 	
+	/**
+	 * @return string
+	 */
 	public function setMessage($messageNr)
 	{
 		if($_POST){
@@ -54,7 +74,7 @@ class loginView{
 					break;
 					
 				case 5:
-					$this->messageString = '<p>Du har loggats ut</p>';	
+					$this->messageString = '<p>Du har nu loggat ut</p>';	
 					break;
 				
 				case 6:
@@ -68,6 +88,9 @@ class loginView{
 		}
 	}
 	
+	/**
+	 * @return bool
+	 */
 	public function checkLogout(){
 		if($_POST){
 			if (isset($_GET[self::$logOut])){
@@ -81,6 +104,9 @@ class loginView{
 		}
 	}
 	
+	/**
+	 * @return bool
+	 */
 	public function checkAutologin()
 	{
 		if($_POST){
@@ -99,13 +125,21 @@ class loginView{
 		setcookie(self::$password, "",time()-3600);
 	}
 	
+	/**
+	 * @return bool
+	 */
 	public function cookiesSet()
 	{
 		if (isset($_COOKIE[self::$username]) && isset($_COOKIE[self::$password]))
 		{
 			return true;
 		}
+		else 
+		{
+			return false;	
+		}
 	}
+	
 	public function autoLogin($username, $password){
 		$this->endtime = time() + 3600;
 		file_put_contents("endtime.txt", $this->endtime);

@@ -4,14 +4,29 @@ namespace model;
 
 class loginModel{
 	
+	/**
+	 * @var string
+	 */
 	private static $mySession = "mySession";
 	
+	/**
+	 * @var string
+	 */
 	private static $username ="Admin";
 	
+	/**
+	 * @var string
+	 */
 	private static $password = "Password";	
 	
+	/**
+	 * @var bool
+	 */
 	private static $checkBrowser = "checkBrowser";
 	
+	/**
+	 * @var string
+	 */
 	private static $browser = "browser";
 	
 	public function checkMessageNr($username, $password)
@@ -75,7 +90,9 @@ class loginModel{
 	
 	public function destroySession()
 	{
-			unset($_SESSION);
+		if(isset($_SESSION[self::$mySession])){
+			session_destroy();
+		}
 	}
 	
 	public function getBrowser()
