@@ -75,7 +75,6 @@ class loginController{
 		$this->password =  $this->loginView->getPassword();
 		
 		$this->session = self::stayLoggedin();
-		var_dump($this->session);
 		
 		$this->cookies = $this->loginView->cookiesSet();
 		
@@ -90,10 +89,6 @@ class loginController{
 		
 		$this->browser = $this->loginModel->checkBrowser();
 		
-		
-		var_dump($this->message."   msg");
-		var_dump($this->messageNr . "        nr");
-			
 		self::loginCookies();	
 		self::showPage();
 	}

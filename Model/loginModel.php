@@ -91,7 +91,7 @@ class loginModel{
 	public function destroySession()
 	{
 		if(isset($_SESSION[self::$mySession])){
-			session_destroy();
+			unset($_SESSION[self::$mySession]);
 		}
 	}
 	

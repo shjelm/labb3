@@ -28,7 +28,7 @@ class loginView{
 	 */
 	public function getUsername(){
 		if($_POST){
-			if(isset($_POST)){
+			if(isset($_POST[self::$username])){
 				$username = $_POST[self::$username];
 				
 				return $username;
@@ -42,7 +42,7 @@ class loginView{
 	public function getPassword()
 	{
 		if($_POST){
-			if(isset($_POST)){	
+			if(isset($_POST[self::$password])){	
 				$password = $_POST[self::$password];
 			
 				return $password;
