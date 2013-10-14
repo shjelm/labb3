@@ -67,6 +67,12 @@ class loginController{
 	 */
 	private $cryptedPassword; 
 	
+	/**
+	 * 
+	 * @param view\LoginView     $loginView    
+	 * @param view\HTMLPage      $HTMLPage            
+	 * @param model\LoginModel   $loginModel  
+	 */
 	public function __construct()
 	{
 		$this->loginView = new \view\LoginView();
@@ -89,7 +95,7 @@ class loginController{
 			
 			$this->messageNr = $this->loginModel->checkMessageNr($this->username, $this->password);
 			
-			if(self::loginWithCookies()){
+			if(self::loginCookies() && $this->session!=true){
 				$this->messageNr = $this->loginModel->setMsgCookies($this->cookies);
 			}
 		}
@@ -108,7 +114,7 @@ class loginController{
 		{
 			$this->HTMLPage->getLogOutPage($this->message);
 		}
-		
+		var_dump(self::loginWithCookies());
 		if(self::loginWithCookies() && $this->session != true)
 		{	//@TODO: Fixa meddelande till inloggning med cookies
 			$this->HTMLPage->getLoggedInPage($this->message);
@@ -159,16 +165,17 @@ class loginController{
 			$this->loginView->autoLogin($this->username, $this->password);
 		}
 	}
-	
+	 //@TODO: tänker jag rätt här? anv.namn och lösen ska kollas, stämmer det så retunera true
 	public function logIn()
 	{
 		return $this->loginModel->checkLogin($this->username, $this->password);
 	}
 	
+	//@TODO: hämta ut lösen från fil, anropa och jämföra, retunera true om cookien är valid
 	public function loginWithCookies()		
 	{
 		$this->cryptedPassword = $this->loginView->getCryptedPassword();
-		var_dump($this->loginView->validCookies($this->username, $this->cryptedPassword));
+		var_dump($this->cryptedPassword);
 		return $this->loginView->validCookies($this->username, $this->cryptedPassword);
 		
 	}

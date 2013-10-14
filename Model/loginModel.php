@@ -5,6 +5,7 @@ namespace model;
 class loginModel{
 	
 	/**
+	 * @TODO: dokumentera koden
 	 * @var string
 	 */
 	private static $mySession = "mySession";
@@ -29,6 +30,9 @@ class loginModel{
 	 */
 	private static $browser = "browser";
 	
+	/**
+	 * @param string
+	 */
 	public function checkMessageNr($username, $password)
 	{
 		if ($username == self::$username && $password == self::$password) {

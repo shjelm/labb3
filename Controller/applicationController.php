@@ -8,8 +8,14 @@ require_once realpath(dirname(__DIR__))."/Controller/loginController.php";
 
 class ApplicationController{
 
-
+	/**
+	 * @var \view\loginView
+	 */
 	private $LoginView;
+	
+	/**
+	 * @var \view\loginController
+	 */
 	private $LoginController;
 	
 	public function __construct(){

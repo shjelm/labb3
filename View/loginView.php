@@ -139,6 +139,7 @@ class loginView{
 	
 	/**
 	 * @return bool
+	 * @TODO: om cookien är satt, retunera true för att sedan kolla så att den är valid
 	 */
 	public function cookiesSet()
 	{
@@ -152,6 +153,9 @@ class loginView{
 		}
 	}
 	
+	/**
+	 *  @TODO: kolla om cookien är valid (namn, lösen och tid), isf retunera true
+	 */
 	public function validCookies($username, $cryptedPassword)
 	{
 		if(self::cookiesSet()){
