@@ -2,9 +2,9 @@
 
 namespace controller;
 
-require_once 'view/loginView.php';
-require_once 'view/HTMLPage.php';
-require_once 'model/loginModel.php';
+require_once realpath(dirname(__DIR__)).'/View/loginView.php';
+require_once realpath(dirname(__DIR__)).'/View/HTMLPage.php';
+require_once realpath(dirname(__DIR__)).'/Model/loginModel.php';
 
 class loginController{
 	/**

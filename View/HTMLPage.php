@@ -5,7 +5,8 @@
  * */
 namespace view;
 
-require_once ("view/LoginView.php");
+require_once realpath(dirname(__DIR__)).'/View/loginView.php';
+
 class HTMLPage{
 	/**
 	 * @var $string HTML
