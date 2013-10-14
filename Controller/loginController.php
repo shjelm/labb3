@@ -7,27 +7,59 @@ require_once 'view/HTMLPage.php';
 require_once 'model/loginModel.php';
 
 class loginController{
-	
+	/**
+	 * @var \view\loginView
+	 */
 	private $loginView;
 	
+	/**
+	 * @var \view\HTMLPage
+	 */
 	private $HTMLPage;
 	
+	/**
+	 * @var \model\loginModel
+	 */
 	private $loginModel;
 	
+	/**
+	 * @var string
+	 */
 	private $username;
 	
+	/**
+	 * @var string
+	 */
 	private $password;
 	
+	/**
+	 * @var int
+	 */
 	private $messageNr;
 	
+	/**
+	 * @var string
+	 */
 	private $message;
 	
+	/**
+	 * @var bool
+	 */
 	private $session;
 	
+	/**
+	 * @var string
+	 */
 	private $browser; 
 	
+	/**
+	 * @var bool
+	 */
 	private $cookies;
 	
+	/**
+	 * @var bool
+	 */
 	private $cookiesOk;
 	
 	public function __construct()
@@ -43,45 +75,48 @@ class loginController{
 		$this->password =  $this->loginView->getPassword();
 		
 		$this->session = self::stayLoggedin();
-		$this->messageNr = self::logOut();
 		
 		$this->cookies = $this->loginView->cookiesSet();
 		
-		$this->messageNr = $this->loginModel->checkCookies($this->cookies);
-		
-		$this->messageNr = $this->loginModel->checkLogin($this->username, $this->password);
+		self::logOut();
+		if(self::logOut() == false){
+			$this->messageNr = $this->loginModel->checkCookies($this->cookies);
+			
+			$this->messageNr = $this->loginModel->checkMessageNr($this->username, $this->password);
+		}
 		
 		$this->message = $this->loginView->setMessage($this->messageNr);
 		
 		$this->browser = $this->loginModel->checkBrowser();
 		
-		var_dump($this->messageNr);
+		
+		var_dump($this->message."   msg");
+		var_dump($this->messageNr . "        nr");
 			
 		self::loginCookies();	
 		self::showPage();
 	}
 	
 	public function showPage()
-	{	var_dump($this->message);			
-		if($this->messageNr == 5)
+	{			
+		if(self::logOut())
 		{
-			var_dump($this->message);
 			$this->HTMLPage->getLogOutPage($this->message);
 		}
 		
-		if($this->cookies == true && $this->session != true)
+		if($this->loginView->cookiesSet() && $this->session != true)
 		{	//@TODO: Fixa meddelande till inloggning med cookies
-			$this->HTMLPage->getLoggedInPage($this->message);
+			$this->HTMLPage->getLoggedInPage("cookie");
 		}		
 		else if($this->browser != true)
 		{
 			$this->HTMLPage->getPage($this->message);
 		}		
-		else if($this->messageNr == 1)
+		else if(self::logIn())
 		{
 			$this->HTMLPage->getLoggedInPage($this->message);
 		}						
-		else if($this->session == true)
+		else if(self::stayLoggedin())
 		{
 			$this->HTMLPage->getLoggedInPage($this->message);
 		}		
@@ -91,13 +126,21 @@ class loginController{
 		}	
 	}
 	
+	/**
+	 * @return bool
+	 */
 	public function logOut()
 	{
 		$checkToLogout = $this->loginView->checkLogout();
-			$this->loginModel->destroySession();
+		
+		$this->messageNr = $this->loginModel->setLogout($checkToLogout);
+		
 		return ($this->loginModel->checkLogout($checkToLogout));
 	}
 	
+	/**
+	 * @return bool
+	 */
 	public function stayLoggedin()
 	{
 		return $this->loginModel->checkSession();
@@ -110,5 +153,10 @@ class loginController{
 		if($autoLogin == true){
 		$this->loginView->autoLogin($this->username, $this->password);
 		}
+	}
+	
+	public function logIn()
+	{
+		return $this->loginModel->checkLogin($this->username, $this->password);
 	}
 }

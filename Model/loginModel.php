@@ -14,7 +14,7 @@ class loginModel{
 	
 	private static $browser = "browser";
 	
-	public function checkLogin($username, $password)
+	public function checkMessageNr($username, $password)
 	{
 		if ($username == self::$username && $password == self::$password) {
 			
@@ -33,11 +33,28 @@ class loginModel{
 		}
 	}
 	
+	public function checkLogin($username, $password)
+	{
+		if ($username == self::$username && $password == self::$password){
+			return true;
+		}
+	}
+	
 	public function checkLogout($logout)
 	{
-		if($logout == true)
+		if($logout)
 		{
 			self::destroySession();			
+			return true;
+		}
+		else{
+			return false;
+		}
+	}
+	public function setLogout($logout)
+	{
+		if($logout)
+		{		
 			return 5;
 		}
 	}
@@ -58,7 +75,7 @@ class loginModel{
 	
 	public function destroySession()
 	{
-			session_destroy();
+			unset($_SESSION);
 	}
 	
 	public function getBrowser()
@@ -78,7 +95,7 @@ class loginModel{
 	
 	public function checkCookies($cookie)
 	{
-		if($cookie == true){
+		if($cookie){
 			return 6;
 		}
 	}

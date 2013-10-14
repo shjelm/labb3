@@ -71,7 +71,6 @@ class loginView{
 	public function checkLogout(){
 		if($_POST){
 			if (isset($_GET[self::$logOut])){
-				unset($_POST);
 				self::unsetCookies();
 				return true;
 			}
