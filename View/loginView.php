@@ -26,7 +26,7 @@ class loginView{
 	/**
 	 * @var string
 	 */
-	private static $cryptedPassword = "";
+	private $cryptedPassword = "";
 	
 	/**
 	 * @var int
@@ -39,7 +39,7 @@ class loginView{
 	 * @return string
 	 */
 	public function getUsername(){
-		if($_POST){
+		if($_POST || $_GET){
 			if(isset($_POST[self::$username])){
 				$username = $_POST[self::$username];
 				
@@ -53,7 +53,7 @@ class loginView{
 	 */
 	public function getPassword()
 	{
-		if($_POST){
+		if($_POST || $_GET){
 			if(isset($_POST[self::$password])){	
 				$password = $_POST[self::$password];
 			
@@ -67,7 +67,7 @@ class loginView{
 	 */
 	public function setMessage($messageNr)
 	{
-		if($_POST){
+		if($_GET){
 			switch ($messageNr) {
 				case 1:
 					$this->messageString = '<p>Inloggningen lyckades</p>';				
@@ -92,11 +92,22 @@ class loginView{
 				case 6:
 					$this->messageString = '<p>Inloggning med cookies</p>';	
 					break;
+					
+				case 7:
+					$this->messageString = '<p>Inloggningen lyckades och vi kommer ihåg dig nästa gång</p>';				
+					break;
 				
 				default:
-					$this->messageString = '<p>Något har gått fel</p>';
+					$this->messageString = '';
 			}
 			return $this->messageString;
+		}
+	}
+	
+	public function checkPost()
+	{
+		if($_POST){
+			return true;
 		}
 	}
 	
@@ -156,11 +167,10 @@ class loginView{
 	/**
 	 *  @TODO: kolla om cookien är valid (namn, lösen och tid), isf retunera true
 	 */
-	public function validCookies($username, $cryptedPassword)
+	public function validCookies($username, $pass, $end, $cryptedPassword)
 	{
 		if(self::cookiesSet()){
-			$end = file_get_contents("endtime.txt");
-			if($_COOKIE[self::$username] == $username  && $cryptedPassword == $cryptedPassword 
+			if($_COOKIE[self::$username] == $username  && self::getCryptedPassword() == $cryptedPassword 
 				&& $end > time())
 			{
 				return true;
@@ -171,33 +181,33 @@ class loginView{
 			}
 		}
 	}
-	public function getCryptedPassword()
-	{
-		if(isset($this->cryptedPassword)){
-			$pass = file_get_contents("password.txt");
-			return $pass;		
-		}
-	}
 	
 	public function getUserCookie()
 	{
+		if(isset($_COOKIE[self::$username]))
 		return $_COOKIE[self::$username];
 	}
 	
 	public function getPasswordCookie()
 	{
+		if(isset($_COOKIE[self::$password]))
 		return $_COOKIE[self::$password];
 	}
 	
-	public function autoLogin($username, $password){
+	public function autoLogin($username, $password, $endtime){
 		
-		$this->endtime = time() + 3600;
+		/*$this->endtime = time() + 3600;
 		file_put_contents("endtime.txt", $this->endtime);
-		setcookie(self::$username, $username, $this->endtime);
+		 * 
+		 */
+		setcookie(self::$username, $username, $endtime);
 		$this->cryptedPassword = crypt($password);
-		setcookie(self::$password, $this->cryptedPassword, $this->endtime);	
+		setcookie(self::$password, $this->cryptedPassword, $endtime);	
 		
-		file_put_contents("password.txt", $this->cryptedPassword);
-
+		//file_put_contents("password.txt", $this->cryptedPassword);
+	}
+	public function getCryptedPassword()
+	{
+		return $this->cryptedPassword; 
 	}
 }

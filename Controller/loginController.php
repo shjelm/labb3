@@ -63,16 +63,20 @@ class loginController{
 	private $cookiesOk;
 	
 	/**
+	 * @var bool
+	 */
+	private $post;
+	
+	/**
+	 * @var bool
+	 */
+	private $autoLogin;
+	
+	/**
 	 * @var string
 	 */
 	private $cryptedPassword; 
 	
-	/**
-	 * 
-	 * @param view\LoginView     $loginView    
-	 * @param view\HTMLPage      $HTMLPage            
-	 * @param model\LoginModel   $loginModel  
-	 */
 	public function __construct()
 	{
 		$this->loginView = new \view\LoginView();
@@ -89,14 +93,27 @@ class loginController{
 		
 		$this->cookies = $this->loginView->cookiesSet();
 		
+		$this->post = $this->loginView->checkPost();
+
+		var_dump($_COOKIE);
+		
 		self::logOut();
 		
-		if(self::logOut() == false){
+		self::loginCookies();	
+		if(self::logOut() == false){			
 			
-			$this->messageNr = $this->loginModel->checkMessageNr($this->username, $this->password);
-			
-			if(self::loginCookies() && $this->session!=true){
+			var_dump(self::validCookie());
+			if ($this->cookies && self::validCookie()){
 				$this->messageNr = $this->loginModel->setMsgCookies($this->cookies);
+							
+			}
+			if ($this->cookies == false && $this->session == false && $this->post){
+				
+				$this->messageNr = $this->loginModel->checkMessageNr($this->username, $this->password);
+			}					
+			if($this->cookies && $this->session)
+			{
+				$this->messageNr = $this->loginModel->setMsgSession($this->session);
 			}
 		}
 		
@@ -104,7 +121,6 @@ class loginController{
 		
 		$this->browser = $this->loginModel->checkBrowser();
 		
-		self::loginCookies();	
 		self::showPage();
 	}
 	
@@ -114,9 +130,10 @@ class loginController{
 		{
 			$this->HTMLPage->getLogOutPage($this->message);
 		}
-		var_dump(self::loginWithCookies());
-		if(self::loginWithCookies() && $this->session != true)
-		{	//@TODO: Fixa meddelande till inloggning med cookies
+		
+		var_dump(self::validCookie());
+		if($this->loginView->cookiesSet() && $this->session != true && self::validCookie())
+		{
 			$this->HTMLPage->getLoggedInPage($this->message);
 		}		
 		else if($this->browser != true)
@@ -130,7 +147,7 @@ class loginController{
 		else if(self::stayLoggedin())
 		{
 			$this->HTMLPage->getLoggedInPage($this->message);
-		}		
+		}	
 		else 
 		{	
 			$this->HTMLPage->getPage($this->message);
@@ -162,7 +179,14 @@ class loginController{
 		$autoLogin = $this->loginView->checkAutoLogin();
 		
 		if($autoLogin && self::logIn()){
-			$this->loginView->autoLogin($this->username, $this->password);
+			
+			$this->loginModel->saveEndTime();
+			$endTime = $this->loginModel->getEndTime();
+		
+			$this->loginView->autoLogin($this->username, $this->password, $endTime);
+			
+			$pass = $this->loginView->getCryptedPassword();
+			$this->loginModel->savePassword($pass);			
 		}
 	}
 	 //@TODO: tänker jag rätt här? anv.namn och lösen ska kollas, stämmer det så retunera true
@@ -171,12 +195,15 @@ class loginController{
 		return $this->loginModel->checkLogin($this->username, $this->password);
 	}
 	
-	//@TODO: hämta ut lösen från fil, anropa och jämföra, retunera true om cookien är valid
-	public function loginWithCookies()		
+	public function validCookie()
 	{
-		$this->cryptedPassword = $this->loginView->getCryptedPassword();
-		var_dump($this->cryptedPassword);
-		return $this->loginView->validCookies($this->username, $this->cryptedPassword);
-		
+		$endTime = $this->loginModel->getEndTime();
+		$correctPass = $this->loginModel->getPassword();
+		if($this->loginView->validCookies($this->loginView->getUserCookie(), $this->loginView->getPasswordCookie(), $endTime, $correctPass)){
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 }

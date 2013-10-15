@@ -25,9 +25,10 @@ class ApplicationController{
 	}
 	public function runApplication()
 	{
-		try{
-			
+		try
+		{
 			$this->LoginController->userWantsToLogin();
+			 
 		}
 		catch(Exception $ex)
 		{
