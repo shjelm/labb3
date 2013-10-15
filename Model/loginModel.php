@@ -33,6 +33,15 @@ class loginModel{
 	/**
 	 * @param string
 	 */
+	
+	public function getUser()
+	{
+		return self::$username;		
+	}
+	public function getPass()
+	{
+		return self::$password;
+	}
 	public function checkMessageNr($username, $password)
 	{
 		if ($username == self::$username && $password == self::$password) {

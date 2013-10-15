@@ -94,15 +94,12 @@ class loginController{
 		$this->cookies = $this->loginView->cookiesSet();
 		
 		$this->post = $this->loginView->checkPost();
-
-		var_dump($_COOKIE);
 		
 		self::logOut();
 		
 		self::loginCookies();	
 		if(self::logOut() == false){			
 			
-			var_dump(self::validCookie());
 			if ($this->cookies && self::validCookie()){
 				$this->messageNr = $this->loginModel->setMsgCookies($this->cookies);
 							
@@ -110,11 +107,7 @@ class loginController{
 			if ($this->cookies == false && $this->session == false && $this->post){
 				
 				$this->messageNr = $this->loginModel->checkMessageNr($this->username, $this->password);
-			}					
-			if($this->cookies && $this->session)
-			{
-				$this->messageNr = $this->loginModel->setMsgSession($this->session);
-			}
+			}				
 		}
 		
 		$this->message = $this->loginView->setMessage($this->messageNr);
@@ -131,7 +124,6 @@ class loginController{
 			$this->HTMLPage->getLogOutPage($this->message);
 		}
 		
-		var_dump(self::validCookie());
 		if($this->loginView->cookiesSet() && $this->session != true && self::validCookie())
 		{
 			$this->HTMLPage->getLoggedInPage($this->message);
@@ -177,7 +169,6 @@ class loginController{
 	public function loginCookies()
 	{
 		$autoLogin = $this->loginView->checkAutoLogin();
-		
 		if($autoLogin && self::logIn()){
 			
 			$this->loginModel->saveEndTime();
@@ -189,7 +180,7 @@ class loginController{
 			$this->loginModel->savePassword($pass);			
 		}
 	}
-	 //@TODO: tänker jag rätt här? anv.namn och lösen ska kollas, stämmer det så retunera true
+	
 	public function logIn()
 	{
 		return $this->loginModel->checkLogin($this->username, $this->password);
@@ -199,7 +190,7 @@ class loginController{
 	{
 		$endTime = $this->loginModel->getEndTime();
 		$correctPass = $this->loginModel->getPassword();
-		if($this->loginView->validCookies($this->loginView->getUserCookie(), $this->loginView->getPasswordCookie(), $endTime, $correctPass)){
+		if($this->loginView->validCookies($this->loginModel->getUser(), $endTime, $correctPass)){
 			return true;
 		}
 		else {

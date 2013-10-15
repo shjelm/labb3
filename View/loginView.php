@@ -70,7 +70,11 @@ class loginView{
 		if($_GET){
 			switch ($messageNr) {
 				case 1:
-					$this->messageString = '<p>Inloggningen lyckades</p>';				
+					$this->messageString = '<p>Inloggningen lyckades</p>';	
+					if(self::checkAutoLogin())
+					{
+						$this->messageString = '<p>Inloggningen lyckades och vi kommer ihåg dig nästa gång</p>';
+					}			
 					break;
 					
 				case 2: 
@@ -132,7 +136,7 @@ class loginView{
 	 */
 	public function checkAutologin()
 	{
-		if($_POST){
+		if($_GET){
 			if(isset($_POST[self::$autoLogin])){
 				return true;
 			}
@@ -156,6 +160,8 @@ class loginView{
 	{
 		if (isset($_COOKIE[self::$username]) && isset($_COOKIE[self::$password]))
 		{
+			//echo 'cookiesSet är true';
+			//die();
 			return true;
 		}
 		else 
@@ -164,13 +170,10 @@ class loginView{
 		}
 	}
 	
-	/**
-	 *  @TODO: kolla om cookien är valid (namn, lösen och tid), isf retunera true
-	 */
-	public function validCookies($username, $pass, $end, $cryptedPassword)
+	public function validCookies($username, $end, $cryptedPassword)
 	{
 		if(self::cookiesSet()){
-			if($_COOKIE[self::$username] == $username  && self::getCryptedPassword() == $cryptedPassword 
+			if($_COOKIE[self::$username] == $username /* && self::getCryptedPassword() == $cryptedPassword */
 				&& $end > time())
 			{
 				return true;
@@ -208,6 +211,8 @@ class loginView{
 	}
 	public function getCryptedPassword()
 	{
-		return $this->cryptedPassword; 
+		if(isset($_COOKIE[self::$password])){	
+			return $_COOKIE[self::$password]; 
+		}
 	}
 }
