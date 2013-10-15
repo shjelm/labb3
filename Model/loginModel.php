@@ -79,6 +79,10 @@ class loginModel{
 			return false;
 		}
 	}
+	public function validCookieMsg()
+	{
+			return 7;
+	}
 	public function setLogout($logout)
 	{
 		if($logout)
@@ -129,17 +133,9 @@ class loginModel{
 		}
 	}
 	
-	public function setMsgSession($session)
-	{
-		if($session)
-		{
-			return 7;
-		}	
-	}
-	
 	public function saveEndTime()
 	{
-		$endtime = time() + 3600;
+		$endtime = time() + 30;
 		file_put_contents("endtime.txt", $endtime);		
 	}
 
@@ -148,17 +144,7 @@ class loginModel{
 		$end = file_get_contents("endtime.txt");
 		return $end;
 	}
-
-	public function savePassword($pass)
-	{
-		file_put_contents("password.txt", $pass);	
-	}
 	
-	public function getPassword()
-	{
-		$pass = file_get_contents("password.txt");
-		return $pass;
-	}
 	public static function getUserAgent()
 	{
 	    static $agent = null;

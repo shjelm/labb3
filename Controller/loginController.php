@@ -99,15 +99,18 @@ class loginController{
 		
 		self::loginCookies();	
 		if(self::logOut() == false){			
-			
-			if ($this->cookies && self::validCookie()){
-				$this->messageNr = $this->loginModel->setMsgCookies($this->cookies);
-							
+				
+			if(self::validCookie() == false && $this->session == false)
+			{
+				$this->messageNr = $this->loginModel->validCookieMsg();
+			}
+			if ($this->cookies && self::validCookie() && $this->session == false){
+				$this->messageNr = $this->loginModel->setMsgCookies($this->cookies);							
 			}
 			if ($this->cookies == false && $this->session == false && $this->post){
 				
 				$this->messageNr = $this->loginModel->checkMessageNr($this->username, $this->password);
-			}				
+			}			
 		}
 		
 		$this->message = $this->loginView->setMessage($this->messageNr);
@@ -123,7 +126,6 @@ class loginController{
 		{
 			$this->HTMLPage->getLogOutPage($this->message);
 		}
-		
 		if($this->loginView->cookiesSet() && $this->session != true && self::validCookie())
 		{
 			$this->HTMLPage->getLoggedInPage($this->message);
@@ -143,6 +145,7 @@ class loginController{
 		else 
 		{	
 			$this->HTMLPage->getPage($this->message);
+			$this->loginView->unsetCookies();
 		}	
 	}
 	
@@ -177,7 +180,8 @@ class loginController{
 			$this->loginView->autoLogin($this->username, $this->password, $endTime);
 			
 			$pass = $this->loginView->getCryptedPassword();
-			$this->loginModel->savePassword($pass);			
+			
+			//$this->loginModel->savePassword($pass);			
 		}
 	}
 	
@@ -189,8 +193,7 @@ class loginController{
 	public function validCookie()
 	{
 		$endTime = $this->loginModel->getEndTime();
-		$correctPass = $this->loginModel->getPassword();
-		if($this->loginView->validCookies($this->loginModel->getUser(), $endTime, $correctPass)){
+		if($this->loginView->validCookies($this->loginModel->getUser(), $endTime)){
 			return true;
 		}
 		else {

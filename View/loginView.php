@@ -71,6 +71,7 @@ class loginView{
 			switch ($messageNr) {
 				case 1:
 					$this->messageString = '<p>Inloggningen lyckades</p>';	
+					
 					if(self::checkAutoLogin())
 					{
 						$this->messageString = '<p>Inloggningen lyckades och vi kommer ihåg dig nästa gång</p>';
@@ -94,11 +95,10 @@ class loginView{
 					break;
 				
 				case 6:
-					$this->messageString = '<p>Inloggning med cookies</p>';	
+					$this->messageString = '<p>Inloggning lyckad med cookies</p>';	
 					break;
-					
 				case 7:
-					$this->messageString = '<p>Inloggningen lyckades och vi kommer ihåg dig nästa gång</p>';				
+					$this->messageString = '<p>Felaktig information i cookie</p>';	
 					break;
 				
 				default:
@@ -170,10 +170,10 @@ class loginView{
 		}
 	}
 	
-	public function validCookies($username, $end, $cryptedPassword)
+	public function validCookies($username, $end)
 	{
 		if(self::cookiesSet()){
-			if($_COOKIE[self::$username] == $username /* && self::getCryptedPassword() == $cryptedPassword */
+			if($_COOKIE[self::$username] == $username  &&  $_COOKIE[self::$password] == md5(self::$password."crypt") 
 				&& $end > time())
 			{
 				return true;
@@ -204,7 +204,7 @@ class loginView{
 		 * 
 		 */
 		setcookie(self::$username, $username, $endtime);
-		$this->cryptedPassword = crypt($password);
+		$this->cryptedPassword = md5($password . "crypt");
 		setcookie(self::$password, $this->cryptedPassword, $endtime);	
 		
 		//file_put_contents("password.txt", $this->cryptedPassword);
@@ -212,7 +212,7 @@ class loginView{
 	public function getCryptedPassword()
 	{
 		if(isset($_COOKIE[self::$password])){	
-			return $_COOKIE[self::$password]; 
+			return $this->cryptedPassword; 
 		}
 	}
 }
