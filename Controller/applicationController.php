@@ -23,6 +23,7 @@ class ApplicationController{
 		$this->LoginController = new \controller\loginController();
 		
 	}
+	
 	public function runApplication()
 	{
 		try

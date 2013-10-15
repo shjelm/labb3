@@ -5,7 +5,6 @@ namespace model;
 class loginModel{
 	
 	/**
-	 * @TODO: dokumentera koden
 	 * @var string
 	 */
 	private static $mySession = "mySession";
@@ -30,9 +29,6 @@ class loginModel{
 	 */
 	private static $browser = "browser";
 	
-	/**
-	 * @param string
-	 */
 	
 	public function getUser()
 	{
@@ -42,6 +38,12 @@ class loginModel{
 	{
 		return self::$password;
 	}
+	
+	/**
+	 * @param string $username
+	 * @param string $password
+	 * @return int
+	 */	
 	public function checkMessageNr($username, $password)
 	{
 		if ($username == self::$username && $password == self::$password) {
@@ -61,13 +63,26 @@ class loginModel{
 		}
 	}
 	
+	/**
+	 * @param string $username
+	 * @param string $password
+	 * @return bool
+	 */	
 	public function checkLogin($username, $password)
 	{
 		if ($username == self::$username && $password == self::$password){
 			return true;
 		}
+		else
+		{
+			return false;
+		}
 	}
 	
+	/**
+	 * @param bool $logout
+	 * @return bool
+	 */	
 	public function checkLogout($logout)
 	{
 		if($logout)
@@ -79,10 +94,27 @@ class loginModel{
 			return false;
 		}
 	}
+	
+	/**
+	 * @return int
+	 */
 	public function validCookieMsg()
 	{
 			return 7;
 	}
+	
+	/**
+	 * @return string
+	 */
+	public function noMsg()
+	{
+		return "";
+	}
+	
+	/**
+	 * @param boll $logout
+	 * @return int
+	 */
 	public function setLogout($logout)
 	{
 		if($logout)
@@ -91,12 +123,12 @@ class loginModel{
 		}
 	}
 	
+	/**
+	 * @return bool
+	 */	
 	public function checkSession()
 	{
 		if(isset($_SESSION[self::$mySession])){
-			$session = $_SESSION[self::$mySession];
-		}
-		if(isset($session)){
 			
 			return true;
 		}
@@ -119,6 +151,10 @@ class loginModel{
 				$_SESSION[self::$checkBrowser][self::$browser] = self::getUserAgent();
 			}		
 	}
+	
+	/**
+	 * @return bool
+	 */	
 	public function checkBrowser()
 	{
 		if($_SESSION[self::$checkBrowser][self::$browser] = self::getUserAgent()){
@@ -126,6 +162,10 @@ class loginModel{
 		}		
 	}
 	
+	/**
+	 * @param bool
+	 * @return int
+	 */	
 	public function setMsgCookies($cookie)
 	{
 		if($cookie){
@@ -135,7 +175,7 @@ class loginModel{
 	
 	public function saveEndTime()
 	{
-		$endtime = time() + 30;
+		$endtime = time() + 3600;
 		file_put_contents("endtime.txt", $endtime);		
 	}
 
@@ -145,6 +185,7 @@ class loginModel{
 		return $end;
 	}
 	
+	/*Magical fix from Emil*/
 	public static function getUserAgent()
 	{
 	    static $agent = null;

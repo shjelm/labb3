@@ -108,6 +108,9 @@ class loginView{
 		}
 	}
 	
+	/**
+	 * @return bool
+	 */	
 	public function checkPost()
 	{
 		if($_POST){
@@ -154,14 +157,11 @@ class loginView{
 	
 	/**
 	 * @return bool
-	 * @TODO: om cookien är satt, retunera true för att sedan kolla så att den är valid
 	 */
 	public function cookiesSet()
 	{
 		if (isset($_COOKIE[self::$username]) && isset($_COOKIE[self::$password]))
 		{
-			//echo 'cookiesSet är true';
-			//die();
 			return true;
 		}
 		else 
@@ -170,6 +170,11 @@ class loginView{
 		}
 	}
 	
+	/**
+	 *@param string $username 
+	 *@param int $end
+	 * @return bool
+	 */	
 	public function validCookies($username, $end)
 	{
 		if(self::cookiesSet()){
@@ -185,30 +190,39 @@ class loginView{
 		}
 	}
 	
+	/**
+	 * @return string
+	 */
 	public function getUserCookie()
 	{
 		if(isset($_COOKIE[self::$username]))
 		return $_COOKIE[self::$username];
 	}
 	
+	/**
+	 * @return string
+	 */
 	public function getPasswordCookie()
 	{
 		if(isset($_COOKIE[self::$password]))
 		return $_COOKIE[self::$password];
 	}
 	
+	/**
+	 * @param string $username
+	 * @param string $password
+	 * @param int $end
+	 */
 	public function autoLogin($username, $password, $endtime){
 		
-		/*$this->endtime = time() + 3600;
-		file_put_contents("endtime.txt", $this->endtime);
-		 * 
-		 */
 		setcookie(self::$username, $username, $endtime);
 		$this->cryptedPassword = md5($password . "crypt");
 		setcookie(self::$password, $this->cryptedPassword, $endtime);	
-		
-		//file_put_contents("password.txt", $this->cryptedPassword);
 	}
+	
+	/**
+	 * @return string
+	 */
 	public function getCryptedPassword()
 	{
 		if(isset($_COOKIE[self::$password])){	

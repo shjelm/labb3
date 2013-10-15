@@ -98,21 +98,25 @@ class loginController{
 		self::logOut();
 		
 		self::loginCookies();	
-		if(self::logOut() == false){			
-				
+		if(self::logOut() == false){
+			var_dump($this->session);			
+				if(self::validCookie() == false && $this->session)
+				{
+					$this->messageNr = 123123123;
+				}	
 			if(self::validCookie() == false && $this->session == false)
 			{
 				$this->messageNr = $this->loginModel->validCookieMsg();
 			}
 			if ($this->cookies && self::validCookie() && $this->session == false){
 				$this->messageNr = $this->loginModel->setMsgCookies($this->cookies);							
-			}
+			}			
 			if ($this->cookies == false && $this->session == false && $this->post){
 				
 				$this->messageNr = $this->loginModel->checkMessageNr($this->username, $this->password);
-			}			
+			}
 		}
-		
+		var_dump($this->messageNr);
 		$this->message = $this->loginView->setMessage($this->messageNr);
 		
 		$this->browser = $this->loginModel->checkBrowser();
@@ -121,14 +125,16 @@ class loginController{
 	}
 	
 	public function showPage()
-	{			
+	{	
 		if(self::logOut())
 		{
-			$this->HTMLPage->getLogOutPage($this->message);
+			$this->HTMLPage->getLogOutPage($this->message);				
+			
 		}
 		if($this->loginView->cookiesSet() && $this->session != true && self::validCookie())
 		{
 			$this->HTMLPage->getLoggedInPage($this->message);
+			
 		}		
 		else if($this->browser != true)
 		{
@@ -141,11 +147,11 @@ class loginController{
 		else if(self::stayLoggedin())
 		{
 			$this->HTMLPage->getLoggedInPage($this->message);
-		}	
+		}
 		else 
 		{	
-			$this->HTMLPage->getPage($this->message);
 			$this->loginView->unsetCookies();
+			$this->HTMLPage->getPage($this->message);
 		}	
 	}
 	
@@ -179,17 +185,21 @@ class loginController{
 		
 			$this->loginView->autoLogin($this->username, $this->password, $endTime);
 			
-			$pass = $this->loginView->getCryptedPassword();
-			
-			//$this->loginModel->savePassword($pass);			
+			$pass = $this->loginView->getCryptedPassword();		
 		}
 	}
 	
+	/**
+	 * @return bool
+	 */	
 	public function logIn()
 	{
 		return $this->loginModel->checkLogin($this->username, $this->password);
 	}
 	
+	/**
+	 * @return bool
+	 */	
 	public function validCookie()
 	{
 		$endTime = $this->loginModel->getEndTime();

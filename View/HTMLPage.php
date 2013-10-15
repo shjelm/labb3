@@ -23,13 +23,19 @@ class HTMLPage{
 	 */
 	private static $mySession = "mySession";
 	
-	private $loginView;
 	/**
-	 * @return String HTML
-	 */
+	 * @var view/LoginView
+	 */	
+	private $loginView;
 	
+	/**
+	 * @var String 
+	 */	
 	private $messageString;
 	
+	/**
+	 * @return string HTML
+	 */	
 	private function startOfHTML(){
 		return '<!DOCTYPE HTML>
 					   <html>
