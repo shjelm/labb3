@@ -108,7 +108,7 @@ class loginModel{
 	 */
 	public function noMsg()
 	{
-		return "";
+		return 999;
 	}
 	
 	/**
@@ -137,6 +137,20 @@ class loginModel{
 		}
 	}
 	
+	/**
+	 * @return bool
+	 */	
+	public function checkBrowserSession()
+	{
+		if(isset($_SESSION[self::$checkBrowser])){
+			
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	
 	public function destroySession()
 	{
 		if(isset($_SESSION[self::$mySession])){
@@ -146,6 +160,7 @@ class loginModel{
 	
 	public function getBrowser()
 	{
+		
 		if (!isset($_SESSION[self::$checkBrowser])){
 				$_SESSION[self::$checkBrowser] = array();
 				$_SESSION[self::$checkBrowser][self::$browser] = self::getUserAgent();
@@ -157,9 +172,12 @@ class loginModel{
 	 */	
 	public function checkBrowser()
 	{
-		if($_SESSION[self::$checkBrowser][self::$browser] = self::getUserAgent()){
-			return true;			
-		}		
+		
+		if(isset($_SESSION[self::$checkBrowser][self::$browser])){
+			if($_SESSION[self::$checkBrowser][self::$browser] = self::getUserAgent()){
+				return true;			
+			}		
+		}
 	}
 	
 	/**
