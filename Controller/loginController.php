@@ -101,15 +101,15 @@ class loginController{
 		
 		$this->post = $this->loginView->checkPost();
 		
+		$this->loginModel->getBrowser();
+		var_dump($this->loginModel->getBrowser());
 		$this->browser = $this->loginModel->checkBrowser();
 		var_dump($this->browser);
 		
 		self::logOut();
 		
 		self::loginCookies();	
-		if(self::logOut() == false){
-			var_dump($this->mySession, $this->browserSession, self::validCookie());
-			
+		if(self::logOut() == false){			
 			
 			if(self::validCookie() == false && $this->mySession == false && $this->browserSession == false)
 			{
@@ -128,8 +128,8 @@ class loginController{
 			}
 		}
 		var_dump($this->messageNr);
-		$this->message = $this->loginView->setMessage($this->messageNr);
 		
+		$this->message = $this->loginView->setMessage($this->messageNr);
 		
 		self::showPage();
 	}
