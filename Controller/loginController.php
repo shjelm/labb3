@@ -102,22 +102,25 @@ class loginController{
 		$this->post = $this->loginView->checkPost();
 		
 		$this->loginModel->getBrowser();
-		var_dump($this->loginModel->getBrowser());
+		
 		$this->browser = $this->loginModel->checkBrowser();
-		var_dump($this->browser);
 		
 		self::logOut();
 		
 		self::loginCookies();	
+		
 		if(self::logOut() == false){			
 			
-			if(self::validCookie() == false && $this->mySession == false && $this->browserSession == false)
-			{
-				$this->messageNr = $this->loginModel->validCookieMsg();
-			}
-			else
-			{
-				$this->messageNr = $this->loginModel->noMsg();
+			if($this->cookies && self::validCookie() == false && $this->mySession == false && $this->browserSession == false)
+			{			
+				if(!$this->browserSession || !$this->mySession)
+				{
+					$this->messageNr = $this->loginModel->validCookieMsg();
+				}
+				else{
+					
+					$this->messageNr = $this->loginModel->noMsg();
+				}
 			}	
 			if ($this->cookies && self::validCookie() && $this->mySession == false){
 				$this->messageNr = $this->loginModel->setMsgCookies($this->cookies);							
@@ -127,7 +130,6 @@ class loginController{
 				$this->messageNr = $this->loginModel->checkMessageNr($this->username, $this->password);
 			}
 		}
-		var_dump($this->messageNr);
 		
 		$this->message = $this->loginView->setMessage($this->messageNr);
 		
@@ -146,10 +148,10 @@ class loginController{
 			$this->HTMLPage->getLoggedInPage($this->message);
 			
 		}		
-		/**else if($this->browser != true)
+		else if($this->browser != true)
 		{
 			$this->HTMLPage->getPage($this->message);
-		}*/		
+		}	
 		else if(self::logIn())
 		{
 			$this->HTMLPage->getLoggedInPage($this->message);

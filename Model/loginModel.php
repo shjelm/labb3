@@ -164,7 +164,6 @@ class loginModel{
 	public function getBrowser()
 	{
 		if (!isset($_SESSION[self::$checkBrowser])){
-			echo 'ja';
 				$_SESSION[self::$checkBrowser] = array();
 				$_SESSION[self::$checkBrowser][self::$browser] = self::getUserAgent();
 			}		
@@ -178,7 +177,6 @@ class loginModel{
 		
 		if(isset($_SESSION[self::$checkBrowser][self::$browser])){
 			if($_SESSION[self::$checkBrowser][self::$browser] == self::getUserAgent()){
-				echo$_SESSION[self::$checkBrowser][self::$browser] . self::getUserAgent()."hej";
 				return true;			
 			}		
 			else {
