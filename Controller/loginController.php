@@ -103,9 +103,9 @@ class loginController{
 		$this->logOut();
 		
 		$this->checkStayLoggedIn();	
-		
 		if($this->logOut() == false){			
 			
+		
 			if($this->saveCredentials &&$this->correctSavedCredentials() == false 
 			   && $this->loggedIn == false && $this->browserUsed == false)
 			{			
@@ -128,6 +128,11 @@ class loginController{
 		}
 		
 		$this->message = $this->loginView->setMessage($this->messageNr);
+		
+		if($this->logOut())
+		{
+			$this->loginView->destroyCredentials();
+		}
 		
 		$this->showPage();
 	}

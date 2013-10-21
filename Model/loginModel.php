@@ -68,8 +68,7 @@ class loginModel{
 	{
 		if ($username == self::$username && $password == self::$password) {
 			
-			$_SESSION[self::$mySession] = true;					
-			
+			$_SESSION[self::$mySession] = true;	
 			return 'correctUserCredentials';
 		} 
 		else if (empty($username)) {
@@ -141,10 +140,6 @@ class loginModel{
 		if($logout)
 		{		
 			return 'userLogOut';
-		}
-		else 
-		{
-			return 'defaultMsg';
 		}
 	}
 	

@@ -68,7 +68,9 @@ class loginView{
 	public function setMessage($message)
 	{
 		if($_GET){
+
 			switch ($message) {
+				
 				case 'correctUserCredentials':
 					$this->messageString = '<p>Inloggningen lyckades</p>';	
 					
@@ -127,7 +129,6 @@ class loginView{
 	public function checkLogout(){
 		if($_POST){
 			if (isset($_GET[self::$logOut])){
-				self::destroyCredentials();
 				return true;
 			}
 			else 
