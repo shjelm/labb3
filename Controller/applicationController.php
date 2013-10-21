@@ -7,7 +7,7 @@ require_once realpath(dirname(__DIR__))."/Controller/loginController.php";
 
 
 class ApplicationController{
-
+	
 	/**
 	 * @var \view\loginView
 	 */
@@ -21,7 +21,6 @@ class ApplicationController{
 	public function __construct(){
 		$this->LoginView = new \view\loginView();
 		$this->LoginController = new \controller\loginController();
-		
 	}
 	
 	public function runApplication()

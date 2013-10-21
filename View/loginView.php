@@ -65,11 +65,11 @@ class loginView{
 	/**
 	 * @return string
 	 */
-	public function setMessage($messageNr)
+	public function setMessage($message)
 	{
 		if($_GET){
-			switch ($messageNr) {
-				case 1:
+			switch ($message) {
+				case 'correctUserCredentials':
 					$this->messageString = '<p>Inloggningen lyckades</p>';	
 					
 					if(self::checkAutoLogin())
@@ -78,26 +78,26 @@ class loginView{
 					}			
 					break;
 					
-				case 2: 
+				case 'emptyUsername': 
 					$this->messageString = '<p>Användarnamn saknas</p>';
 					break;
 	
-				case 3: 
+				case 'emptyPassword': 
 					$this->messageString = '<p>Lösenord saknas</p>';
 					break;		
 					
-				case 4:
+				case 'incorrectUserCredentials':
 					$this->messageString = '<p>Felaktigt användarnamn och/eller lösenord</p>';	
 					break;
 					
-				case 5:
+				case 'userLogOut':
 					$this->messageString = '<p>Du har nu loggat ut</p>';	
 					break;
 				
-				case 6:
+				case 'saveCredentials':
 					$this->messageString = '<p>Inloggning lyckad med cookies</p>';	
 					break;
-				case 7:
+				case 'validSavedCredentials':
 					$this->messageString = '<p>Felaktig information i cookie</p>';	
 					break;
 				
@@ -111,10 +111,13 @@ class loginView{
 	/**
 	 * @return bool
 	 */	
-	public function checkPost()
+	public function checkFormSent()
 	{
 		if($_POST){
 			return true;
+		}
+		else{
+			return false;
 		}
 	}
 	
@@ -124,7 +127,7 @@ class loginView{
 	public function checkLogout(){
 		if($_POST){
 			if (isset($_GET[self::$logOut])){
-				self::unsetCookies();
+				self::destroyCredentials();
 				return true;
 			}
 			else 
@@ -149,7 +152,7 @@ class loginView{
 		}
 	}
 	
-	public function unsetCookies()
+	public function destroyCredentials()
 	{
 		setcookie(self::$username, "",time()-3600);
 		setcookie(self::$password, "",time()-3600);
@@ -158,7 +161,7 @@ class loginView{
 	/**
 	 * @return bool
 	 */
-	public function cookiesSet()
+	public function canSaveCredentials()
 	{
 		if (isset($_COOKIE[self::$username]) && isset($_COOKIE[self::$password]))
 		{
@@ -175,9 +178,9 @@ class loginView{
 	 *@param int $end
 	 * @return bool
 	 */	
-	public function validCookies($username, $end)
+	public function correctSavedCredentials($username, $end)
 	{
-		if(self::cookiesSet()){
+		if(self::canSaveCredentials()){
 			if($_COOKIE[self::$username] == $username  &&  $_COOKIE[self::$password] == md5(self::$password."crypt") 
 				&& $end > time())
 			{
@@ -188,24 +191,6 @@ class loginView{
 				return false;
 			}
 		}
-	}
-	
-	/**
-	 * @return string
-	 */
-	public function getUserCookie()
-	{
-		if(isset($_COOKIE[self::$username]))
-		return $_COOKIE[self::$username];
-	}
-	
-	/**
-	 * @return string
-	 */
-	public function getPasswordCookie()
-	{
-		if(isset($_COOKIE[self::$password]))
-		return $_COOKIE[self::$password];
 	}
 	
 	/**

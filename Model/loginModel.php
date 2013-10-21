@@ -4,6 +4,7 @@ namespace model;
 
 class loginModel{
 	
+	
 	/**
 	 * @var string
 	 */
@@ -29,14 +30,33 @@ class loginModel{
 	 */
 	private static $browser = "browser";
 	
-	
+	/**
+	 * @return string
+	 */
 	public function getUser()
 	{
 		return self::$username;		
 	}
+	
+	/**
+	 * @return string
+	 */
 	public function getPass()
 	{
 		return self::$password;
+	}
+	
+	public function defineConst()
+	{		
+		define("correctUserCredentials", 1);
+		define("emptyUsername", 2);
+		define("emptyPassword", 3);
+		define("incorrectUserCredentials", 4);
+		define("userLogOut", 5);
+		define("saveCredentials", 6);
+		define("validSavedCredentials", 7);
+		define("defaultMsg", 999);
+		
 	}
 	
 	/**
@@ -50,16 +70,16 @@ class loginModel{
 			
 			$_SESSION[self::$mySession] = true;					
 			
-			return 1;
+			return 'correctUserCredentials';
 		} 
 		else if (empty($username)) {
-			return 2;
+			return 'emptyUsername';
 		} 
 		else if (empty($password)) {
-			return 3;
+			return 'emptyPassword';
 		} 
 		else {
-			 return 4;
+			 return 'incorrectUserCredentials';
 		}
 	}
 	
@@ -71,6 +91,7 @@ class loginModel{
 	public function checkLogin($username, $password)
 	{
 		if ($username == self::$username && $password == self::$password){
+			
 			return true;
 		}
 		else
@@ -87,7 +108,7 @@ class loginModel{
 	{
 		if($logout)
 		{
-			self::destroySession();			
+			$this->destroySession();			
 			return true;
 		}
 		else{
@@ -98,9 +119,9 @@ class loginModel{
 	/**
 	 * @return int
 	 */
-	public function validCookieMsg()
+	public function validSavedCredentialsMsg()
 	{
-			return 7;
+			return 'validSavedCredentials';
 	}
 	
 	/**
@@ -108,7 +129,7 @@ class loginModel{
 	 */
 	public function noMsg()
 	{
-		return 999;
+		return 'defaultMsg';
 	}
 	
 	/**
@@ -119,14 +140,18 @@ class loginModel{
 	{
 		if($logout)
 		{		
-			return 5;
+			return 'userLogOut';
+		}
+		else 
+		{
+			return 'defaultMsg';
 		}
 	}
 	
 	/**
 	 * @return bool
 	 */	
-	public function checkSession()
+	public function checkLoggedIn()
 	{
 		if(isset($_SESSION[self::$mySession])){
 			
@@ -140,7 +165,7 @@ class loginModel{
 	/**
 	 * @return bool
 	 */	
-	public function checkBrowserSession()
+	public function checkBrowserUsed()
 	{
 		if(isset($_SESSION[self::$checkBrowser])){
 			
@@ -189,10 +214,10 @@ class loginModel{
 	 * @param bool
 	 * @return int
 	 */	
-	public function setMsgCookies($cookie)
+	public function setMsgSaveCredentials($canSaveCredentials)
 	{
-		if($cookie){
-			return 6;
+		if($canSaveCredentials){
+			return 'saveCredentials';
 		}
 	}
 	

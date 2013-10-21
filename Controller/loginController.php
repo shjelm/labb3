@@ -45,7 +45,7 @@ class loginController{
 	/**
 	 * @var bool
 	 */
-	private $mySession;
+	private $loggedIn;
 	
 	/**
 	 * @var string
@@ -55,12 +55,7 @@ class loginController{
 	/**
 	 * @var bool
 	 */
-	private $cookies;
-	
-	/**
-	 * @var bool
-	 */
-	private $cookiesOk;
+	private $saveCredentials;
 	
 	/**
 	 * @var bool
@@ -80,7 +75,7 @@ class loginController{
 	/**
 	 * @var bool
 	 */
-	private $browserSession;
+	private $browserUsed;
 	
 	public function __construct()
 	{
@@ -94,38 +89,39 @@ class loginController{
 		$this->username = $this->loginView->getUsername();
 		$this->password =  $this->loginView->getPassword();
 		
-		$this->mySession = self::stayLoggedin();
-		$this->browserSession = $this->loginModel->checkBrowserSession();
+		$this->loggedIn = $this->stayLoggedin();
+		$this->browserUsed = $this->loginModel->checkBrowserUsed();
 		
-		$this->cookies = $this->loginView->cookiesSet();
+		$this->saveCredentials = $this->loginView->canSaveCredentials();
 		
-		$this->post = $this->loginView->checkPost();
+		$this->post = $this->loginView->checkFormSent();
 		
 		$this->loginModel->getBrowser();
 		
 		$this->browser = $this->loginModel->checkBrowser();
 		
-		self::logOut();
+		$this->logOut();
 		
-		self::loginCookies();	
+		$this->checkStayLoggedIn();	
 		
-		if(self::logOut() == false){			
+		if($this->logOut() == false){			
 			
-			if($this->cookies && self::validCookie() == false && $this->mySession == false && $this->browserSession == false)
+			if($this->saveCredentials &&$this->correctSavedCredentials() == false 
+			   && $this->loggedIn == false && $this->browserUsed == false)
 			{			
-				if(!$this->browserSession || !$this->mySession)
+				if(!$this->browserUsed || !$this->loggedIn)
 				{
-					$this->messageNr = $this->loginModel->validCookieMsg();
+					$this->messageNr = $this->loginModel->validSavedCredentialsMsg();
 				}
 				else{
 					
 					$this->messageNr = $this->loginModel->noMsg();
 				}
 			}	
-			if ($this->cookies && self::validCookie() && $this->mySession == false){
-				$this->messageNr = $this->loginModel->setMsgCookies($this->cookies);							
+			if ($this->saveCredentials && $this->correctSavedCredentials() && $this->loggedIn == false){
+				$this->messageNr = $this->loginModel->setMsgSaveCredentials($this->saveCredentials);							
 			}			
-			if ($this->cookies == false && $this->mySession == false && $this->post){
+			if ($this->saveCredentials == false && $this->loggedIn == false && $this->post){
 				
 				$this->messageNr = $this->loginModel->checkMessageNr($this->username, $this->password);
 			}
@@ -133,17 +129,17 @@ class loginController{
 		
 		$this->message = $this->loginView->setMessage($this->messageNr);
 		
-		self::showPage();
+		$this->showPage();
 	}
 	
 	public function showPage()
 	{	
-		if(self::logOut())
+		if($this->logOut())
 		{
 			$this->HTMLPage->getLogOutPage($this->message);				
 			
 		}
-		if($this->loginView->cookiesSet() && $this->mySession != true && self::validCookie())
+		if($this->loginView->canSaveCredentials() && $this->loggedIn != true && $this->correctSavedCredentials())
 		{
 			$this->HTMLPage->getLoggedInPage($this->message);
 			
@@ -152,17 +148,17 @@ class loginController{
 		{
 			$this->HTMLPage->getPage($this->message);
 		}	
-		else if(self::logIn())
+		else if($this->logIn())
 		{
 			$this->HTMLPage->getLoggedInPage($this->message);
 		}						
-		else if(self::stayLoggedin())
+		else if($this->stayLoggedin())
 		{
 			$this->HTMLPage->getLoggedInPage($this->message);
 		}
 		else 
 		{	
-			$this->loginView->unsetCookies();
+			$this->loginView->destroyCredentials();
 			$this->HTMLPage->getPage($this->message);
 		}	
 	}
@@ -184,14 +180,13 @@ class loginController{
 	 */
 	public function stayLoggedin()
 	{
-		return $this->loginModel->checkSession();
+		return $this->loginModel->checkLoggedIn();
 	}
 	
-	public function loginCookies()
+	public function checkStayLoggedIn()
 	{
 		$autoLogin = $this->loginView->checkAutoLogin();
-		if($autoLogin && self::logIn()){
-			
+		if($autoLogin && $this->logIn()){
 			$this->loginModel->saveEndTime();
 			$endTime = $this->loginModel->getEndTime();
 		
@@ -212,10 +207,10 @@ class loginController{
 	/**
 	 * @return bool
 	 */	
-	public function validCookie()
+	public function correctSavedCredentials()
 	{
 		$endTime = $this->loginModel->getEndTime();
-		if($this->loginView->validCookies($this->loginModel->getUser(), $endTime)){
+		if($this->loginView->correctSavedCredentials($this->loginModel->getUser(), $endTime)){
 			return true;
 		}
 		else {
