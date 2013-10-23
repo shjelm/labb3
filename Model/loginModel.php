@@ -4,6 +4,14 @@ namespace model;
 
 class loginModel{
 	
+	const CORRECTUSERCREDENTIALS = 1;
+	const EMPTYUSERNAME = 2;
+	const EMPTYPASSWORD = 3;
+	const INCORRECTUSERCREDENTIALS = 4;
+	const USERLOGOUT = 5;
+	const SAVECREDENTIALS = 6;
+	const VALIDSAVEDCREDENTIALS = 7;
+	const DEFAULTMSG = 999;
 	
 	/**
 	 * @var string
@@ -44,19 +52,6 @@ class loginModel{
 	public function getPass()
 	{
 		return self::$password;
-	}
-	
-	public function defineConst()
-	{		
-		define("correctUserCredentials", 1);
-		define("emptyUsername", 2);
-		define("emptyPassword", 3);
-		define("incorrectUserCredentials", 4);
-		define("userLogOut", 5);
-		define("saveCredentials", 6);
-		define("validSavedCredentials", 7);
-		define("defaultMsg", 999);
-		
 	}
 	
 	/**
